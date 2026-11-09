@@ -27,7 +27,14 @@ jobs:
         shell: cmd
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-          cmake -S . -B build -G "Ninja Multi-Config" -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release -DGGML_CUDA_CCCL_VERSION=v3.4.3
+          cmake -S . -B build -G "Ninja Multi-Config" ^
+            -DGGML_NATIVE=OFF ^
+            -DGGML_AVX512=OFF ^
+            -DGGML_AVX2=ON ^
+            -DLLAMA_BUILD_BORINGSSL=ON ^
+            -DGGML_CUDA=ON ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DGGML_CUDA_CCCL_VERSION=v3.4.3
           cmake --build build --config Release -j 4 --target llama-server llama-cli llama-bench
 
       - name: Copy CUDA runtime DLLs
