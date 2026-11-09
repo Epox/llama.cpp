@@ -33,14 +33,13 @@ jobs:
       - name: Copy CUDA runtime DLLs
         shell: pwsh
         run: |
-          mkdir -p build/bin/Release
+          if (-not (Test-Path "build\bin\Release")) {
+            New-Item -ItemType Directory -Path "build\bin\Release" -Force
+          }
           if (Test-Path "$env:CUDA_PATH\bin") {
             Copy-Item "$env:CUDA_PATH\bin\cudart64_*.dll" -Destination "build\bin\Release" -ErrorAction SilentlyContinue
             Copy-Item "$env:CUDA_PATH\bin\cublas64_*.dll" -Destination "build\bin\Release" -ErrorAction SilentlyContinue
             Copy-Item "$env:CUDA_PATH\bin\cublasLt64_*.dll" -Destination "build\bin\Release" -ErrorAction SilentlyContinue
-          }
-          if (Test-Path "build\bin\llama-server.exe") {
-            Copy-Item "build\bin\*" -Destination "build\bin\Release" -Recurse -Force -ErrorAction SilentlyContinue
           }
 
       - name: Upload Binaries
